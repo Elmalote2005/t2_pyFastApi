@@ -1,9 +1,8 @@
-﻿fastapi
-uvicorn
-pymongo
-pydantic
-pydantic-settings
-python-multipart
-httpx
-requests
-
+﻿fastapi==0.115.0
+uvicorn==0.32.0
+pymongo==4.10.1
+python-dotenv==1.0.1
+python-multipart==0.0.9
+Django==6.1.2
+djangorestframework==0.15.2
+djangorestframework-simplejwt==5.3.1
