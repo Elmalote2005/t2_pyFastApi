@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿fastapi==0.115.0
 uvicorn==0.32.0
 pymongo==4.10.1
@@ -6,3 +7,15 @@ python-multipart==0.0.9
 Django==6.1.2
 djangorestframework==0.15.2
 djangorestframework-simplejwt==5.3.1
+=======
+﻿fastapi
+uvicorn
+pymongo
+pydantic
+pydantic-settings
+python-multipart
+httpx
+requests
+python-jose[cryptography]
+passlib[bcrypt]
+>>>>>>> e6e4704bc7c0245cbbd63bcbb0f8a3b5ec54bf50
