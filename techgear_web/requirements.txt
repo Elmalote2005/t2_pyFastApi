@@ -1,3 +1,12 @@
 ﻿Django
 requests
 python-dotenv
+fastapi
+uvicorn
+pymongo
+pydantic
+pydantic-settings
+python-multipart
+httpx
+python-jose[cryptography]
+passlib[bcrypt]

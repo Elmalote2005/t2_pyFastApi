@@ -14,9 +14,14 @@ client = MongoClient(settings.MONGO_URI, serverSelectionTimeoutMS=5000)
 
 try:
     client.admin.command("ping")
-    print("Conexion exitosa a MongoDB Atlas")
+    print("✅ Conexión exitosa a MongoDB Atlas")
     db = client.techgear_db
+    
+    # Colecciones
     productos_collection = db.productos
     pedidos_collection = db.pedidos
+    usuarios_collection = db.usuarios  # ← Nueva colección para autenticación
+    
 except ConnectionFailure as e:
-    print(f"Error de conexion: {e}")
+    print(f"❌ Error de conexión: {e}")
+    client.close()
