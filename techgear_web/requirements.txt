@@ -1,23 +1,4 @@
-<<<<<<< HEAD
 ﻿Django==6.1.2
-djangorestframework==0.15.2
+djangorestframework==3.16.0
 djangorestframework-simplejwt==5.3.1
-fastapi==0.115.0
-uvicorn==0.32.0
-pymongo==4.10.1
-python-dotenv==1.0.1
 requests==2.32.3
-=======
-﻿Django
-requests
-python-dotenv
-fastapi
-uvicorn
-pymongo
-pydantic
-pydantic-settings
-python-multipart
-httpx
-python-jose[cryptography]
-passlib[bcrypt]
->>>>>>> e6e4704bc7c0245cbbd63bcbb0f8a3b5ec54bf50

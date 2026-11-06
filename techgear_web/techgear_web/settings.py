@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-﻿from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = 'django-insecure-cambio_esta_clave'
-
-DEBUG = True
-
-ALLOWED_HOSTS = []
-=======
 """
 Django settings for techgear_web project.
 """
@@ -22,7 +11,6 @@ SECRET_KEY = 'django-insecure-am8evv#-7s_2ee(my45!9)h%4sd-%f!90&)^i$2bwq)l&$!0eu
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
->>>>>>> e6e4704bc7c0245cbbd63bcbb0f8a3b5ec54bf50
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -78,23 +66,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-<<<<<<< HEAD
 LANGUAGE_CODE = 'es-co'
 TIME_ZONE = 'America/Bogota'
-=======
-LANGUAGE_CODE = 'es-es'
-
-TIME_ZONE = 'America/Bogota'
-
->>>>>>> e6e4704bc7c0245cbbd63bcbb0f8a3b5ec54bf50
 USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-<<<<<<< HEAD
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-=======
-
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
@@ -105,9 +82,4 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/catalogo/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
->>>>>>> e6e4704bc7c0245cbbd63bcbb0f8a3b5ec54bf50
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

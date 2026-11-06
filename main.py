@@ -5,9 +5,16 @@ from pymongo import MongoClient
 from datetime import datetime
 import hashlib
 import secrets
+import os
+from dotenv import load_dotenv
 
-MONGODB_URI = "mongodb+srv://techgear_user:nZBVljAiCnmNoWVG@cluster0.bvjdyrp.mongodb.net/?retryWrites=true&w=majority"
-DB_NAME = "techgear_db"
+# Cargar credenciales desde .env (no se suben a GitHub)
+load_dotenv()
+MONGODB_URI = os.getenv(
+    "MONGODB_URI",
+    "mongodb+srv://techgear_user:nZBVljAiCnmNoWVG@cluster0.bvjdyrp.mongodb.net/?retryWrites=true&w=majority"
+)
+DB_NAME = os.getenv("DB_NAME", "techgear_db")
 
 try:
     client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=15000)
@@ -17,7 +24,7 @@ try:
     client.admin.command("ping")
     print("✅ CONECTADO A MONGODB ATLAS")
 except Exception as e:
-    print(f"ERROR: {e}")
+    print(f"ERROR DE CONEXIÓN: {e}")
     raise
 
 app = FastAPI()
@@ -53,13 +60,13 @@ def hash_password_simple(pw: str) -> str:
 
 @app.get("/")
 def inicio():
-    return {"mensaje": "API funcionando"}
+    return {"mensaje": "API funcionando correctamente"}
 
 @app.post("/registro")
 def registro(datos: RegistroDatos):
     existe = usuarios_col.find_one({"correo": datos.correo})
     if existe:
-        raise HTTPException(400, "El correo ya esta registrado")
+        raise HTTPException(400, "El correo ya está registrado")
     
     rol_asignado = "admin" if datos.correo.endswith("@admin.com") else "usuario"
     
@@ -99,7 +106,7 @@ def listar_productos():
         productos_iniciales = [
             {"nombre": "Moto Deportiva 150cc", "descripcion": "Ideal para ciudad", "precio": 5200000, "stock": 15, "categoria": "Deportivas", "imagen": "/moto1.jpg"},
             {"nombre": "Moto Trail 250cc", "descripcion": "Todo terreno", "precio": 6800000, "stock": 8, "categoria": "Aventura", "imagen": "/moto2.jpg"},
-            {"nombre": "Moto Urbana 125cc", "descripcion": "Economica y agil", "precio": 3400000, "stock": 25, "categoria": "Urbanas", "imagen": "/moto3.jpg"}
+            {"nombre": "Moto Urbana 125cc", "descripcion": "Económica y ágil", "precio": 3400000, "stock": 25, "categoria": "Urbanas", "imagen": "/moto3.jpg"}
         ]
         productos_col.insert_many(productos_iniciales)
         lista = list(productos_col.find())

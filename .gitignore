@@ -1,7 +1,30 @@
-﻿.env
+﻿# Variables de entorno y claves secretas
+.env
+.env.local
+
+# Entornos virtuales
 venv/
+env/
+.venv/
+.env/
 techgear_web/venv/
+techgear_api/venv/
+
+# Archivos compilados de Python
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+
+# Sistema operativo
 .DS_Store
+Thumbs.db
+
+# Base de datos local de Django
+*.sqlite3
+*.db
+
+# Archivos de configuración local
+*.log
+.vscode/
+.idea/

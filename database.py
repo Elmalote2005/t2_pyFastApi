@@ -8,7 +8,8 @@ load_dotenv()
 try:
     cliente = MongoClient(os.getenv("MONGODB_URI"), serverSelectionTimeoutMS=5000)
     cliente.admin.command("ping")
-    print("Conexión exitosa a MongoDB")
+    print("✅ Conexión exitosa a MongoDB")
+    
     base_datos = cliente["techgear"]
     
     productos_collection = base_datos["productos"]
@@ -16,4 +17,4 @@ try:
     usuarios_collection = base_datos["usuarios"]
 
 except ConnectionFailure as e:
-    print(f"Error de conexión: {e}")
+    print(f"❌ Error de conexión a MongoDB: {e}")

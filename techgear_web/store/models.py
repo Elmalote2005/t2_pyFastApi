@@ -1,17 +1,16 @@
 ﻿from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 
-<<<<<<< HEAD
-# Modelos de la aplicación Store
-# Nota: Los datos de negocio (productos, pedidos, usuarios) 
-# se gestionan en MongoDB desde techgear_api/main.py
-=======
+
 class Usuario(models.Model):
     nombre = models.CharField(max_length=100)
     correo = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-    rol = models.CharField(max_length=20, default="usuario",
-                            choices=[("usuario", "Usuario"), ("admin", "Administrador")])
+    rol = models.CharField(
+        max_length=20,
+        default="usuario",
+        choices=[("usuario", "Usuario"), ("admin", "Administrador")]
+    )
     is_active = models.BooleanField(default=True)
 
     def set_password(self, raw_password):
@@ -23,6 +22,7 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
@@ -33,6 +33,7 @@ class Producto(models.Model):
 
     def __str__(self):
         return self.nombre
+
 
 class Pedido(models.Model):
     ESTADO_OPCIONES = [
@@ -50,4 +51,3 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido {self.id} - {self.nombre_cliente}"
->>>>>>> e6e4704bc7c0245cbbd63bcbb0f8a3b5ec54bf50
