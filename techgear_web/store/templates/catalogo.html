@@ -1,55 +1,54 @@
-﻿<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Productos - TechGear</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'inicio' %}">🏍️ TechGear</a>
-            <div>
-                {% if usuario and usuario.rol == 'admin' %}
-                <a href="{% url 'panel_admin' %}" class="btn btn-warning btn-sm me-2">⚙️ Panel Admin</a>
-                {% endif %}
-                <a href="{% url 'cerrar_sesion' %}" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
-            </div>
-        </div>
-    </nav>
+﻿{% extends "base.html" %}
 
-    <div class="container">
-        <h2 class="mb-4">Catálogo de Motos</h2>
-        
-        {% if productos %}
-        <div class="row g-4">
-            {% for producto in productos %}
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    {% if producto.imagen_url %}
-                    <img src="{{ producto.imagen_url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 200px; object-fit: cover;">
-                    {% else %}
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 200px;">
-                        Sin imagen
-                    </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ producto.nombre }}</h5>
-                        <p class="card-text text-muted small">{{ producto.categoria }}</p>
-                        <p class="card-text">{{ producto.descripcion|truncatechars:60 }}</p>
-                        <h5 class="text-primary fw-bold">${{ producto.precio }}</h5>
-                        <p class="card-text small text-muted">Stock: {{ producto.stock }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+{% block titulo %}Catálogo - TechGear{% endblock %}
+
+{% block contenido %}
+<h2 style="text-align:center; color:var(--primario); margin-bottom:2rem;">📦 Catálogo de Productos</h2>
+
+<div class="grid-productos">
+{% for producto in productos %}
+    <div class="tarjeta-producto">
+        {% if producto.imagen_url %}
+        <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" loading="lazy"
+             style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:1rem;">
         {% else %}
-        <div class="alert alert-info text-center">
-            No hay productos disponibles en este momento.
+        <div style="width:100%; height:200px; background:#eee; display:flex; align-items:center; justify-content:center; border-radius:8px; margin-bottom:1rem;">
+            <span style="color:#999;">Sin imagen</span>
         </div>
         {% endif %}
+        
+        <h3 style="margin:0.5rem 0;">{{ producto.nombre }}</h3>
+        
+        {% if producto.descripcion %}
+        <p style="color:var(--texto-claro); font-size:0.9rem; margin:0.5rem 0;">{{ producto.descripcion }}</p>
+        {% endif %}
+        
+        <p class="precio" style="font-size:1.3rem; font-weight:bold; color:var(--acento); margin:1rem 0;">${{ producto.precio }}</p>
+        
+        {% if producto.cantidad > 0 %}
+            {% if usuario %}
+                {% if producto.id %}
+                <a href="{% url 'agregar_carrito' producto.id %}" 
+                   style="display:block; text-align:center; padding:0.7rem; background:var(--primario); color:white; border-radius:6px; text-decoration:none; font-weight:bold;">
+                    🛒 Agregar al carrito
+                </a>
+                {% else %}
+                <p style="color:gray; text-align:center;">No disponible</p>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" 
+                   style="display:block; text-align:center; padding:0.7rem; background:var(--primario); color:white; border-radius:6px; text-decoration:none; font-weight:bold;">
+                    🔐 Inicia sesión para comprar
+                </a>
+            {% endif %}
+        {% else %}
+            <p style="color:red; font-weight:bold; text-align:center;">❌ Agotado</p>
+        {% endif %}
     </div>
-</body>
-</html>
+{% empty %}
+    <p style="text-align:center; color:var(--texto-claro); grid-column:1/-1; padding:2rem;">
+        No hay productos disponibles por ahora.
+    </p>
+{% endfor %}
+</div>
+{% endblock %}

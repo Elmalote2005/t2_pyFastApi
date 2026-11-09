@@ -1,0 +1,53 @@
+﻿{% extends "base.html" %}
+
+{% block contenido %}
+<h2 style="text-align:center;margin-bottom:2rem;color:var(--primario);">📋 Gestión de Pedidos</h2>
+
+<div class="navegacion-panel">
+    <a href="{% url 'panel_admin' %}" class="inactivo">← Volver a Productos</a>
+    <a href="{% url 'ver_pedidos' %}" class="activo">📋 Pedidos</a>
+</div>
+
+<div style="max-width:1000px;margin:0 auto;">
+    <h3 style="color:var(--exito);margin-bottom:1.5rem;text-align:center;">Pedidos Realizados</h3>
+    {% if pedidos %}
+    <div style="overflow-x:auto;">
+        <table class="tabla-pedidos">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Productos</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos %}
+                <tr>
+                    <td><strong>{{ forloop.counter }}</strong></td>
+                    <td>
+                        {{ pedido.nombre_cliente|default:'Anónimo' }}<br>
+                        <small style="color:var(--texto-claro);">{{ pedido.correo_cliente|default:'Sin correo' }}</small>
+                    </td>
+                    <td>
+                        {% if pedido.items %}
+                            {% for item in pedido.items %}
+                                • {{ item.nombre }} × {{ item.cantidad|default:1 }}<br>
+                            {% endfor %}
+                        {% else %}
+                            Sin detalle
+                        {% endif %}
+                    </td>
+                    <td style="font-weight:bold;color:var(--exito);">${{ pedido.total }}</td>
+                    <td style="color:var(--texto-claro);font-size:0.9rem;">{{ pedido.fecha|default:'—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="text-align:center;color:var(--texto-claro);padding:3rem;font-size:1.1rem;">Aún no hay pedidos registrados.</p>
+    {% endif %}
+</div>
+{% endblock %}

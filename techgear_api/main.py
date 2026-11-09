@@ -1,102 +1,65 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+﻿from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, EmailStr
 from pymongo import MongoClient
-from datetime import datetime, timedelta
 import hashlib
-import jwt
 
-# Conectar a MongoDB
-cliente = MongoClient("mongodb+srv://techgear_user:nZBVljAiCnmNoWVG@cluster0.bvjdyrp.mongodb.net/?retryWrites=true&w=majority")
-db = cliente["techgear_db"]
-usuarios_col = db["usuarios"]
-productos_col = db["productos"]
+# 🔴 CONEXIÓN CORRECTA A TU BASE DE DATOS EN LA NUBE
+URI = "mongodb+srv://techgear_user:h7S3p2YBjXhOPB5b@cluster0.bvjdyrp.mongodb.net/?retryWrites=true&w=majority"
 
-app = FastAPI()
-SECRET_KEY = "clave_secreta_para_tokens"
+client = MongoClient(URI, serverSelectionTimeoutMS=5000)
 
-# Funci�n de hash USANDO EL MISMO SISTEMA
-def hash_password_simple(pw: str) -> str:
+try:
+    client.admin.command("ping")
+    print("✅ Conexión exitosa a MongoDB Atlas")
+    db = client["techgear_db"]
+except Exception as e:
+    print(f"❌ Error de conexión: {e}")
+    raise
+
+# Colecciones
+usuarios_collection = db["usuarios"]
+productos_collection = db["productos"]
+
+def hash_pw(pw: str) -> str:
     return hashlib.sha256(pw.encode("utf-8")).hexdigest()
 
-def crear_token(datos: dict, expira_en=24):
-    payload = datos.copy()
-    payload["exp"] = datetime.utcnow() + timedelta(hours=expira_en)
-    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+app = FastAPI()
 
-class RegistroDatos(BaseModel):
+class LoginData(BaseModel):
+    correo: EmailStr
+    password: str
+
+class RegistroData(BaseModel):
     nombre: str
-    correo: str
+    correo: EmailStr
     password: str
-
-class LoginDatos(BaseModel):
-    correo: str
-    password: str
-
-@app.get("/")
-def raiz():
-    return {"mensaje": "API funcionando correctamente"}
 
 @app.post("/registro")
-def registro(datos: RegistroDatos):
-    existe = usuarios_col.find_one({"correo": datos.correo})
+def registro(datos: RegistroData):
+    existe = usuarios_collection.find_one({"correo": datos.correo})
     if existe:
-        raise HTTPException(400, "El correo ya est� registrado")
-    
-    # Determinar rol
-    rol = "admin" if datos.correo.endswith("@admin.com") else "usuario"
-    
-    nuevo_usuario = {
-        "nombre": datos.nombre, "imagen": datos.imagen, "descripcion": datos.descripcion,
+        raise HTTPException(status_code=400, detail="El correo ya existe")
+    nuevo = {
+        "nombre": datos.nombre,
         "correo": datos.correo,
-        "password": hash_password_simple(datos.password),
-        "rol": rol,
-        "fecha_registro": datetime.utcnow()
+        "password": hash_pw(datos.password),
+        "es_admin": False
     }
-    usuarios_col.insert_one(nuevo_usuario)
-    return {"mensaje": "Usuario registrado correctamente", "rol": rol}
+    usuarios_collection.insert_one(nuevo)
+    return {"mensaje": "Registrado correctamente"}
 
 @app.post("/login")
-def login(datos: LoginDatos):
-    usuario = usuarios_col.find_one({"correo": datos.correo})
+def login(datos: LoginData):
+    usuario = usuarios_collection.find_one({"correo": datos.correo})
     if not usuario:
-        raise HTTPException(401, "Credenciales incorrectas")
-    
-    # Comparar con el MISMO sistema de hash
-    hash_entrada = hash_password_simple(datos.password)
-    if usuario["password"] != hash_entrada:
-        raise HTTPException(401, "Credenciales incorrectas")
-    
-    rol = usuario.get("rol", "usuario")
-    token = crear_token({"sub": usuario["correo"], "rol": rol})
-    return {
-        "access_token": token,
-        "token_type": "bearer",
-        "usuario": {
-            "nombre": usuario["nombre"],
-            "correo": usuario["correo"],
-            "rol": rol
-        }
-    }
+        raise HTTPException(status_code=401, detail="Credenciales incorrectas")
+    if usuario["password"] != hash_pw(datos.password):
+        raise HTTPException(status_code=401, detail="Credenciales incorrectas")
+    return {"mensaje": "Bienvenido", "nombre": usuario["nombre"], "es_admin": usuario.get("es_admin", False)}
 
 @app.get("/productos")
 def listar_productos():
-    productos = list(productos_col.find({}, {"_id": 0}))
-    return {"productos": productos}
-
-@app.post("/productos")
-def crear_producto(datos: dict):
-    datos["fecha_creacion"] = datetime.utcnow()
-    productos_col.insert_one(datos)
-    return {"mensaje": "Producto creado"}
-
-@app.put("/productos/{id_producto}")
-def editar_producto(id_producto: str, datos: dict):
-    from bson import ObjectId
-    productos_col.update_one({"_id": ObjectId(id_producto)}, {"$set": datos})
-    return {"mensaje": "Producto actualizado"}
-
-@app.delete("/productos/{id_producto}")
-def eliminar_producto(id_producto: str):
-    from bson import ObjectId
-    productos_col.delete_one({"_id": ObjectId(id_producto)})
-    return {"mensaje": "Producto eliminado"}
+    productos = list(productos_collection.find())
+    for p in productos:
+        p["_id"] = str(p["_id"])
+    return productos

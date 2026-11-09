@@ -1,0 +1,30 @@
+﻿{% extends "base.html" %}
+
+{% block contenido %}
+<h2 style="text-align:center;margin-bottom:2rem;color:var(--primario);">🛒 Mi Carrito</h2>
+
+{% if carrito %}
+<div style="max-width:700px;margin:0 auto;">
+    {% for item in carrito %}
+    <div class="item-carrito">
+        {% if item.imagen_url %}
+        <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}">
+        {% else %}
+        <div class="sin-imagen">Sin img</div>
+        {% endif %}
+        <div class="info-item">
+            <h4 style="margin-bottom:0.3rem;">{{ item.nombre }}</h4>
+            <p style="font-weight:bold;color:var(--exito);font-size:1.1rem;">${{ item.precio }}</p>
+        </div>
+        <a href="{% url 'eliminar_del_carrito' forloop.counter0 %}" class="btn-eliminar" onclick="return confirm('¿Quitar del carrito?')">Quitar</a>
+    </div>
+    {% endfor %}
+    
+    <div class="total-carrito">
+        <h3>Total: ${{ total }}</h3>
+    </div>
+</div>
+{% else %}
+<p style="text-align:center;color:var(--texto-claro);padding:3rem;font-size:1.1rem;">Tu carrito está vacío.<br><a href="{% url 'catalogo' %}" style="color:var(--secundario);text-decoration:none;font-weight:600;">Ver catálogo →</a></p>
+{% endif %}
+{% endblock %}
