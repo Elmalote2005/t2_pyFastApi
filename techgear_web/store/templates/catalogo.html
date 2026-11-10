@@ -23,10 +23,10 @@
         <p style="color:var(--texto-claro); font-size:0.9rem; margin:0.5rem 0;">{{ producto.descripcion }}</p>
         {% endif %}
         
-        <p class="precio" style="font-size:1.3rem; font-weight:bold; color:var(--acento); margin:1rem 0;">${{ producto.precio }}</p>
+        <p class="precio" style="font-size:1.3rem; font-weight:bold; color:var(--acento); margin:1rem 0;">${{ producto.precio|floatformat:0 }}</p>
         
         {% if producto.cantidad > 0 %}
-            {% if usuario %}
+            {% if request.session.nombre %}
                 {% if producto.id %}
                 <a href="{% url 'agregar_carrito' producto.id %}" 
                    style="display:block; text-align:center; padding:0.7rem; background:var(--primario); color:white; border-radius:6px; text-decoration:none; font-weight:bold;">

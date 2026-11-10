@@ -466,14 +466,16 @@
         <div class="nav-links">
             <a href="{% url 'inicio' %}">Inicio</a>
             <a href="{% url 'catalogo' %}">Catálogo</a>
-            {% if usuario %}
-                {% if es_admin %}
+            
+            {% if request.session.nombre %}
+                {% if request.session.es_admin %}
                     <a href="{% url 'panel_admin' %}">⚙️ Panel Admin</a>
-                    <a href="{% url 'ver_pedidos' %}">📋 Pedidos</a>
                 {% else %}
                     <a href="{% url 'ver_carrito' %}">🛒 Mi Carrito</a>
+                    <a href="{% url 'ver_pedidos' %}">📋 Mis Pedidos</a>
                 {% endif %}
-                <span class="usuario-nombre">{{ usuario.nombre }}</span>
+                
+                <span class="usuario-nombre">👤 {{ request.session.nombre }}</span>
                 <a href="{% url 'cerrar_sesion' %}">Cerrar Sesión</a>
             {% else %}
                 <a href="{% url 'login' %}">Ingresar</a>

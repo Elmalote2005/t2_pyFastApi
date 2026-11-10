@@ -8,20 +8,27 @@
     {% for item in carrito %}
     <div class="item-carrito">
         {% if item.imagen_url %}
-        <img src="{{ item.imagen_url }}" alt="{{ item.nombre }}">
+        <img src="{{ item.imagen_url }}" alt="{{ item.nombre_producto }}">
         {% else %}
         <div class="sin-imagen">Sin img</div>
         {% endif %}
         <div class="info-item">
-            <h4 style="margin-bottom:0.3rem;">{{ item.nombre }}</h4>
-            <p style="font-weight:bold;color:var(--exito);font-size:1.1rem;">${{ item.precio }}</p>
+            <h4 style="margin-bottom:0.3rem;">{{ item.nombre_producto }}</h4>
+            <p style="font-weight:bold;color:var(--exito);font-size:1.1rem;">${{ item.precio|floatformat:0 }}</p>
+            <p style="color:var(--texto-claro);font-size:0.9rem;">Cantidad: {{ item.cantidad }}</p>
         </div>
-        <a href="{% url 'eliminar_del_carrito' forloop.counter0 %}" class="btn-eliminar" onclick="return confirm('¿Quitar del carrito?')">Quitar</a>
+        {% if item.id %}
+        <a href="{% url 'eliminar_del_carrito' item.id %}" class="btn-eliminar" onclick="return confirm('¿Quitar del carrito?')">Quitar</a>
+        {% endif %}
     </div>
     {% endfor %}
     
     <div class="total-carrito">
-        <h3>Total: ${{ total }}</h3>
+        <h3>Total: ${{ total|floatformat:0 }}</h3>
+        <form action="{% url 'crear_pedido' %}" method="POST" style="margin-top:1rem;">
+            {% csrf_token %}
+            <button type="submit" class="btn-enviar">✅ Finalizar Compra</button>
+        </form>
     </div>
 </div>
 {% else %}

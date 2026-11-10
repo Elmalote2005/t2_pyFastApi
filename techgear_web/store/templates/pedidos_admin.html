@@ -28,18 +28,18 @@
                     <td><strong>{{ forloop.counter }}</strong></td>
                     <td>
                         {{ pedido.nombre_cliente|default:'Anónimo' }}<br>
-                        <small style="color:var(--texto-claro);">{{ pedido.correo_cliente|default:'Sin correo' }}</small>
+                        <small style="color:var(--texto-claro);">{{ pedido.correo_usuario|default:'Sin correo' }}</small>
                     </td>
                     <td>
                         {% if pedido.items %}
                             {% for item in pedido.items %}
-                                • {{ item.nombre }} × {{ item.cantidad|default:1 }}<br>
+                                • {{ item.nombre_producto|default:item.nombre }} × {{ item.cantidad|default:1 }}<br>
                             {% endfor %}
                         {% else %}
                             Sin detalle
                         {% endif %}
                     </td>
-                    <td style="font-weight:bold;color:var(--exito);">${{ pedido.total }}</td>
+                    <td style="font-weight:bold;color:var(--exito);">${{ pedido.total|floatformat:0 }}</td>
                     <td style="color:var(--texto-claro);font-size:0.9rem;">{{ pedido.fecha|default:'—' }}</td>
                 </tr>
                 {% endfor %}
