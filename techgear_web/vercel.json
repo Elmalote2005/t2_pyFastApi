@@ -1,17 +1,7 @@
-{
-    "version": 2,
-    "builds": [
-        {
-            "src": "techgear_web/wsgi.py",
-            "use": "@vercel/python"
-
-
-    }
-], 
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "techgear_web/wsgi.py"
-        }
-    ]
+﻿{
+  "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --noinput",
+  "devCommand": "python manage.py runserver 0.0.0.0:8000",
+  "installCommand": "pip install -r requirements.txt",
+  "framework": "django",
+  "outputDirectory": "staticfiles"
 }
