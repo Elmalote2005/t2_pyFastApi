@@ -3,12 +3,7 @@ from datetime import datetime, timedelta
 import hashlib
 import jwt
 from bson import ObjectId
-from .database import (
-    usuarios_collection,
-    productos_collection,
-    pedidos_collection,
-    carrito_collection
-)
+from .database import get_database
 from .models import Producto, ProductoUpdate, Pedido, PedidoUpdate, Usuario, LoginData
 
 router = APIRouter()
@@ -28,6 +23,7 @@ def raiz():
 
 @router.post("/registro")
 def registro(usuario: Usuario):
+    usuarios_collection = get_database()["usuarios"]
     existe = usuarios_collection.find_one({"correo": usuario.correo})
     if existe:
         raise HTTPException(400, "El correo ya está registrado")
@@ -46,6 +42,7 @@ def registro(usuario: Usuario):
 
 @router.post("/login")
 def login(datos: LoginData):
+    usuarios_collection = get_database()["usuarios"]
     usuario = usuarios_collection.find_one({"correo": datos.correo})
     if not usuario:
         raise HTTPException(401, "Credenciales incorrectas")
@@ -67,6 +64,7 @@ def login(datos: LoginData):
 
 @router.get("/productos")
 def listar_productos():
+    productos_collection = get_database()["productos"]
     productos = []
     for p in productos_collection.find():
         p["id"] = str(p["_id"])   # Convertimos _id a id ✅
@@ -76,6 +74,7 @@ def listar_productos():
 
 @router.post("/productos")
 def crear_producto(producto: Producto):
+    productos_collection = get_database()["productos"]
     nuevo = producto.model_dump()
     nuevo["fecha_creacion"] = datetime.utcnow()
     productos_collection.insert_one(nuevo)
@@ -83,16 +82,19 @@ def crear_producto(producto: Producto):
 
 @router.delete("/productos/{nombre}")
 def eliminar_producto(nombre: str):
+    productos_collection = get_database()["productos"]
     productos_collection.delete_one({"nombre": nombre})
     return {"mensaje": "Producto eliminado ✅"}
 
 @router.get("/carrito/{correo}")
 def ver_carrito(correo: str):
+    carrito_collection = get_database()["carrito"]
     carrito = carrito_collection.find_one({"usuario_correo": correo}, {"_id": 0})
     return carrito if carrito else {"items": [], "total": 0}
 
 @router.post("/carrito/{correo}/agregar")
 def agregar_al_carrito(correo: str, item: dict):
+    carrito_collection = get_database()["carrito"]
     carrito = carrito_collection.find_one({"usuario_correo": correo}) or {
         "usuario_correo": correo,
         "items": [],
@@ -112,6 +114,10 @@ def agregar_al_carrito(correo: str, item: dict):
 
 @router.post("/pedidos/{correo}/confirmar")
 def confirmar_pedido(correo: str):
+    db = get_database()
+    carrito_collection = db["carrito"]
+    pedidos_collection = db["pedidos"]
+    productos_collection = db["productos"]
     carrito = carrito_collection.find_one({"usuario_correo": correo})
     if not carrito or not carrito["items"]:
         raise HTTPException(400, "Carrito vacío")
@@ -136,4 +142,5 @@ def confirmar_pedido(correo: str):
 
 @router.get("/admin/pedidos")
 def ver_todos_pedidos():
+    pedidos_collection = get_database()["pedidos"]
     return list(pedidos_collection.find({}, {"_id": 0}))

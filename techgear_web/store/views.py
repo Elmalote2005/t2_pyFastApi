@@ -1,7 +1,7 @@
 ﻿import requests
 from django.shortcuts import render, redirect
 
-API_URL = "http://127.0.0.1:8001"
+API_URL = "https://t2-pyfastapi-kmt2onrender.com"
 
 def inicio(request):
     return render(request, "inicio.html")
@@ -35,7 +35,7 @@ def login(request):
         
         try:
             resp = requests.post(f"{API_URL}/login", json=datos, timeout=10)
-            print("Respuesta API:", resp.status_code, resp.text)
+            print("Respuesta login:", resp.status_code, resp.text)
             
             if resp.status_code == 200:
                 usuario = resp.json()
@@ -47,9 +47,15 @@ def login(request):
                     return redirect("panel_admin")
                 else:
                     return redirect("inicio")
-                    
+            else:
+                return render(request, "login.html", {
+                    "error": "Credenciales incorrectas. Verifica tus datos."
+                })
         except Exception as e:
-            print("Error de conexion login:", e)
+            print("❌ Error de conexion login:", e)
+            return render(request, "login.html", {
+                "error": "No se pudo conectar con el servidor. Verifica tu conexión e intenta nuevamente."
+            })
     
     return render(request, "login.html")
 
@@ -70,10 +76,22 @@ def registro(request):
         try:
             resp = requests.post(f"{API_URL}/registro", json=datos, timeout=10)
             print("Respuesta registro:", resp.status_code)
+            
             if resp.status_code in (200, 201):
                 return redirect("login")
+            elif resp.status_code == 400:
+                return render(request, "registro.html", {
+                    "error": "Este correo ya está registrado."
+                })
+            else:
+                return render(request, "registro.html", {
+                    "error": "No se pudo completar el registro. Intenta más tarde."
+                })
         except Exception as e:
-            print("Error de conexion registro:", e)
+            print("❌ Error de conexion registro:", e)
+            return render(request, "registro.html", {
+                "error": "No se pudo conectar con el servidor. Verifica tu conexión e intenta nuevamente."
+            })
     
     return render(request, "registro.html")
 
@@ -219,7 +237,7 @@ def eliminar_del_carrito(request, item_id):
         )
         print("✅ Eliminado del carrito:", resp.status_code)
     except Exception as e:
-        print("❌ Error eliminar item:", e)
+        print("❌ Error eliminar del carrito:", e)
     
     return redirect("ver_carrito")
 
