@@ -60,6 +60,7 @@
             display: flex;
             gap: 2rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
@@ -376,6 +377,7 @@
             border-radius: 10px;
             margin-bottom: 1rem;
             box-shadow: var(--sombra);
+            flex-wrap: wrap;
         }
 
         .item-carrito img,
@@ -393,6 +395,7 @@
 
         .info-item {
             flex: 1;
+            min-width: 200px;
         }
 
         .total-carrito {
@@ -488,6 +491,11 @@
         {% if error %}
         <div class="mensaje-error">{{ error }}</div>
         {% endif %}
+        
+        {% if mensaje %}
+        <div class="mensaje-exito">{{ mensaje }}</div>
+        {% endif %}
+        
         {% block contenido %}{% endblock %}
     </main>
 </body>
