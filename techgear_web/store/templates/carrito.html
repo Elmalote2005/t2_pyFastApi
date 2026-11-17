@@ -1,11 +1,11 @@
 ﻿{% extends "base.html" %}
 
 {% block contenido %}
-<h2 style="text-align:center;margin-bottom:2rem;color:var(--primario);">🛒 Mi Carrito</h2>
+<h2 class="form-titulo">🛒 Mi Carrito</h2>
 
-{% if carrito %}
+{% if carrito and carrito.items %}
 <div style="max-width:700px;margin:0 auto;">
-    {% for item in carrito %}
+    {% for item in carrito.items %}
     <div class="item-carrito">
         {% if item.imagen_url %}
         <img src="{{ item.imagen_url }}" alt="{{ item.nombre_producto }}">
@@ -17,21 +17,22 @@
             <p style="font-weight:bold;color:var(--exito);font-size:1.1rem;">${{ item.precio|floatformat:0 }}</p>
             <p style="color:var(--texto-claro);font-size:0.9rem;">Cantidad: {{ item.cantidad }}</p>
         </div>
-        {% if item.id %}
-        <a href="{% url 'eliminar_del_carrito' item.id %}" class="btn-eliminar" onclick="return confirm('¿Quitar del carrito?')">Quitar</a>
+        {% if item.producto_id %}
+        <a href="{% url 'eliminar_del_carrito' item.producto_id %}" class="btn-eliminar" onclick="return confirm('¿Quitar del carrito?')">Quitar</a>
         {% endif %}
     </div>
     {% endfor %}
     
     <div class="total-carrito">
-        <h3>Total: ${{ total|floatformat:0 }}</h3>
+        <h3>Total: ${{ carrito.total|floatformat:0 }}</h3>
         <form action="{% url 'crear_pedido' %}" method="POST" style="margin-top:1rem;">
             {% csrf_token %}
+            <input type="hidden" name="correo_usuario" value="{{ request.session.correo }}">
             <button type="submit" class="btn-enviar">✅ Finalizar Compra</button>
         </form>
     </div>
 </div>
 {% else %}
-<p style="text-align:center;color:var(--texto-claro);padding:3rem;font-size:1.1rem;">Tu carrito está vacío.<br><a href="{% url 'catalogo' %}" style="color:var(--secundario);text-decoration:none;font-weight:600;">Ver catálogo →</a></p>
+<p class="form-titulo" style="color:var(--texto-claro);padding:3rem;">Tu carrito está vacío.<br><a href="{% url 'catalogo' %}" style="color:var(--secundario);text-decoration:none;font-weight:600;">Ver catálogo →</a></p>
 {% endif %}
 {% endblock %}

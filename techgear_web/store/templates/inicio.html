@@ -2,11 +2,11 @@
 
 {% block contenido %}
 <div class="hero">
-    <h1>🚀 Bienvenido a TechGear</h1>
+    <h1>Bienvenido a TechGear</h1>
     <p>Tu tienda de tecnología de confianza. Encuentra productos de calidad a los mejores precios.</p>
     <div class="hero-botones">
         <a href="{% url 'catalogo' %}" class="btn btn-primario">Ver Catálogo</a>
-        {% if not usuario %}
+        {% if not request.session.nombre %}
         <a href="{% url 'login' %}" class="btn btn-secundario">Iniciar Sesión</a>
         <a href="{% url 'registro' %}" class="btn btn-secundario">Crear Cuenta</a>
         {% endif %}

@@ -3,47 +3,44 @@
 {% block titulo %}Catálogo - TechGear{% endblock %}
 
 {% block contenido %}
-<h2 style="text-align:center; color:var(--primario); margin-bottom:2rem;">📦 Catálogo de Productos</h2>
+<h2 class="form-titulo">📦 Catálogo de Productos</h2>
 
 <div class="grid-productos">
 {% for producto in productos %}
     <div class="tarjeta-producto">
         {% if producto.imagen_url %}
-        <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" loading="lazy"
-             style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:1rem;">
+        <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}" loading="lazy">
         {% else %}
-        <div style="width:100%; height:200px; background:#eee; display:flex; align-items:center; justify-content:center; border-radius:8px; margin-bottom:1rem;">
-            <span style="color:#999;">Sin imagen</span>
-        </div>
+        <div class="sin-imagen">Sin imagen</div>
         {% endif %}
         
-        <h3 style="margin:0.5rem 0;">{{ producto.nombre }}</h3>
-        
-        {% if producto.descripcion %}
-        <p style="color:var(--texto-claro); font-size:0.9rem; margin:0.5rem 0;">{{ producto.descripcion }}</p>
-        {% endif %}
-        
-        <p class="precio" style="font-size:1.3rem; font-weight:bold; color:var(--acento); margin:1rem 0;">${{ producto.precio|floatformat:0 }}</p>
-        
-        {% if producto.cantidad > 0 %}
-            {% if request.session.nombre %}
-                {% if producto.id %}
-                <a href="{% url 'agregar_carrito' producto.id %}" 
-                   style="display:block; text-align:center; padding:0.7rem; background:var(--primario); color:white; border-radius:6px; text-decoration:none; font-weight:bold;">
-                    🛒 Agregar al carrito
-                </a>
+        <div class="tarjeta-contenido">
+            <h3>{{ producto.nombre }}</h3>
+            
+            {% if producto.descripcion %}
+            <p style="color:var(--texto-claro); font-size:0.9rem; margin:0.5rem 0;">{{ producto.descripcion }}</p>
+            {% endif %}
+            
+            <p class="precio">${{ producto.precio|floatformat:0 }}</p>
+            
+            {% if producto.cantidad > 0 %}
+                {% if request.session.nombre %}
+                    {% if producto.id %}
+                    <form action="{% url 'agregar_carrito' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                        <button type="submit" class="btn-carrito">🛒 Agregar al carrito</button>
+                    </form>
+                    {% else %}
+                    <p style="color:gray; text-align:center;">No disponible</p>
+                    {% endif %}
                 {% else %}
-                <p style="color:gray; text-align:center;">No disponible</p>
+                    <a href="{% url 'login' %}" class="btn-carrito">🔐 Inicia sesión para comprar</a>
                 {% endif %}
             {% else %}
-                <a href="{% url 'login' %}" 
-                   style="display:block; text-align:center; padding:0.7rem; background:var(--primario); color:white; border-radius:6px; text-decoration:none; font-weight:bold;">
-                    🔐 Inicia sesión para comprar
-                </a>
+                <p style="color:var(--peligro); font-weight:bold; text-align:center; padding:0.5rem;">❌ Agotado</p>
             {% endif %}
-        {% else %}
-            <p style="color:red; font-weight:bold; text-align:center;">❌ Agotado</p>
-        {% endif %}
+        </div>
     </div>
 {% empty %}
     <p style="text-align:center; color:var(--texto-claro); grid-column:1/-1; padding:2rem;">

@@ -102,7 +102,9 @@ python manage.py runserver
 
 ## 📌 Notas Importantes
 
-- La conexión con MongoDB Atlas se configura mediante la variable `MONGO_URI` en el archivo `database.py` de la API
+- La conexión con MongoDB se configura mediante `MONGO_URI` (también se acepta `MONGODB_URI`) en `techgear_api/.env` localmente o como variable de entorno en Render/Vercel. No guardes estas credenciales en el código.
+- La base de datos se llama `techgear_db` por defecto; se puede cambiar con `MONGO_DATABASE` o `MONGODB_DATABASE`.
+- Si MongoDB no está configurado o no responde, la API devuelve HTTP 503 con un mensaje explícito; la aplicación puede iniciar sin bloquear el despliegue y reintenta conectar al recibir solicitudes.
 - La variable `API_URL` en `settings.py` de Django apunta a la dirección de la API
 - En producción, la API_URL se actualizará con el enlace público de Render
 - Las contraseñas se almacenan encriptadas con SHA-256

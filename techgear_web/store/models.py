@@ -27,7 +27,7 @@ class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
     precio = models.FloatField()
-    stock = models.IntegerField(default=0)
+    cantidad = models.IntegerField(default=0)  # ✅ Antes era 'stock' — coincide con formularios
     categoria = models.CharField(max_length=50)
     imagen_url = models.URLField(blank=True, null=True)
 
@@ -42,12 +42,27 @@ class Pedido(models.Model):
         ("entregado", "Entregado"),
         ("cancelado", "Cancelado"),
     ]
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="pedidos")
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="pedidos", null=True, blank=True)
     nombre_cliente = models.CharField(max_length=100)
-    email_cliente = models.EmailField()
-    direccion = models.CharField(max_length=255)
+    correo_usuario = models.EmailField()  # ✅ Antes era 'email_cliente' — coincide con plantillas
+    direccion = models.CharField(max_length=255, blank=True, null=True)  # ✅ Opcional por ahora
     estado = models.CharField(max_length=20, choices=ESTADO_OPCIONES, default="pendiente")
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Pedido {self.id} - {self.nombre_cliente}"
+
+
+# ✅ Modelo necesario para registrar qué productos tiene cada pedido
+class ItemPedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name="items")
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    nombre_producto = models.CharField(max_length=100)  # Guardamos el nombre en caso de que el producto se elimine
+    precio = models.FloatField()
+    cantidad = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.cantidad}x {self.nombre_producto}"
+    
+    def subtotal(self):
+        return self.precio * self.cantidad
