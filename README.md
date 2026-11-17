@@ -1,128 +1,89 @@
-```
 # 🛒 TechGear — Tienda en Línea
-Aplicación web de comercio electrónico desarrollada con **FastAPI + Django + MongoDB**
-> Autor: **Santiago Avendaño Zapata** — Estudiante de ADSO
-
----
-
-## 📂 Estructura del Proyecto
-```
-
-t2_pyFastApi/
-├── techgear_api/          # Backend — FastAPI
-│   ├── main.py
-│   ├── database.py
-│   ├── models.py
-│   └── requirements.txt
-└── techgear_web/          # Frontend — Django
-├── manage.py
-├── store/
-│   ├── views.py
-│   ├── models.py
-│   ├── urls.py
-│   └── templates/
-├── techgear_web/
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── vercel.json
-└── requirements.txt
-
-```
-
----
-
-## 🔗 Enlaces del Proyecto
-| Servicio | Plataforma | Enlace |
-|---|---|---|
-| **API (Backend)** | Render | *(Pendiente — se agrega mañana)* |
-| **Web Django (Frontend)** | Vercel | *(Pendiente — se agrega mañana)* |
-| **Repositorio GitHub** | GitHub | https://github.com/Elmalote2005/t2_pyFastApi |
-
----
-
-## 🔑 Credenciales de Acceso
-
-### 👑 Administrador
-| Campo | Valor |
-|---|---|
-| **Correo** | administrador1@admin.com |
-| **Contraseña** | Admin12345 |
-| **Permisos** | Acceso al panel de administración, agregar/editar/eliminar productos, gestionar pedidos |
-
-### 👤 Usuarios Registrados de Prueba
-| Nombre | Correo | Contraseña | Rol |
-|---|---|---|---|
-| Carlos | carlos@correo.com | Carlos123 | Cliente |
-| Wilson | wilson@correo.com | Wilson123 | Cliente |
-| Jairo | jairo@correo.com | Jairo123 | Cliente |
-| Fabiana | fabiana@correo.com | Fabiana123 | Cliente |
-
-### 📋 Funcionalidades por Rol
-- **Administrador** ✅ → Ver catálogo completo, agregar productos, gestionar pedidos, acceder al panel de control
-- **Usuario registrado** ✅ → Navegar catálogo, agregar productos al carrito, realizar pedidos, ver historial de compras
-- **Visitante** ⚠️ → Solo puede ver productos; debe iniciar sesión para comprar
-
----
-
-## ⚙️ Tecnologías Utilizadas
-- **Backend**: FastAPI + Python 3.12
-- **Base de Datos**: MongoDB Atlas
-- **Frontend**: Django 4.2 + HTML/CSS
-- **Despliegue API**: Render
-- **Despliegue Web**: Vercel
-- **Control de Versiones**: Git + GitHub
-
----
-
-## 🚀 Ejecución en Entorno Local
-
-### 1. Levantar la API (terminal 1)
-```bash
-cd techgear_api
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8001
-```
 
 > 
-> La API estará disponible en: `http://127.0.0.1:8001`
-
-### 2. Levantar Django (terminal 2)
-
-```
-cd techgear_web
-pip install -r requirements.txt
-python manage.py runserver
-```
-
-> 
-> La web estará disponible en: `http://127.0.0.1:8000`
+> Tienda virtual desarrollada con **Django + FastAPI + MongoDB** como proyecto formativo de SENA.
 
 ---
 
-## 📌 Notas Importantes
+## 🚀 Enlaces de Despliegue
 
-- La conexión con MongoDB se configura mediante `MONGO_URI` (también se acepta `MONGODB_URI`) en `techgear_api/.env` localmente o como variable de entorno en Render/Vercel. No guardes estas credenciales en el código.
-- La base de datos se llama `techgear_db` por defecto; se puede cambiar con `MONGO_DATABASE` o `MONGODB_DATABASE`.
-- Si MongoDB no está configurado o no responde, la API devuelve HTTP 503 con un mensaje explícito; la aplicación puede iniciar sin bloquear el despliegue y reintenta conectar al recibir solicitudes.
-- La variable `API_URL` en `settings.py` de Django apunta a la dirección de la API
-- En producción, la API_URL se actualizará con el enlace público de Render
-- Las contraseñas se almacenan encriptadas con SHA-256
-- El despliegue en Vercel se configura mediante el archivo `vercel.json` en la carpeta `techgear_web/`
+Tabla
+
+| Servicio | URL |
+| --- | --- |
+| 🌐 **Frontend (Vercel)** | [https://t2-py-fast-api.vercel.app](https://t2-py-fast-api.vercel.app) |
+| ⚡ **API Backend (Render)** | [https://t2-pyfastapi-kmt2.onrender.com](https://t2-pyfastapi-kmt2.onrender.com) |
+| 📚 **Documentación API (Swagger)** | [https://t2-pyfastapi-kmt2.onrender.com/docs](https://t2-pyfastapi-kmt2.onrender.com/docs) |
 
 ---
 
-> 
-> ✅ Proyecto en desarrollo — actualizaciones pendientes: enlaces públicos de Vercel y Render
+## 📋 Descripción del Proyecto
+
+TechGear es una plataforma de comercio electrónico que permite a los usuarios explorar un catálogo de productos, registrarse, iniciar sesión, agregar productos al carrito y realizar pedidos. El proyecto está dividido en dos componentes principales:
+
+- **Frontend:** Desarrollado con Django, plantillas HTML y CSS. Desplegado en Vercel.
+- **Backend API:** Desarrollado con FastAPI. Desplegado en Render.
+- **Base de Datos:** MongoDB Atlas — almacena usuarios, productos, carrito y pedidos.
+
+---
+
+## 👤 Usuarios y Acceso
+
+### 🔑 Administrador
+
+- **Correo:** `admin@techgear.com`
+- **Contraseña:** `Admin12345`
+- ✅ Se crea automáticamente al iniciar la API por primera vez.
+- ⚠️ Solo el administrador puede crear y eliminar productos desde el panel de control.
+
+### 👥 Usuarios Regulares
+
+- **No requieren aprobación previa** ✅
+- Cualquier persona puede registrarse libremente con su correo y contraseña
+- Pueden navegar el catálogo, agregar al carrito y crear pedidos
+- Al cerrar sesión, los productos del catálogo siguen visibles para todos los visitantes
+
+---
+
+## ✨ Funcionalidades Principales
+
+- ✅ Página de inicio con presentación de la tienda
+- ✅ Catálogo de productos cargados dinámicamente desde MongoDB
+- ✅ Sistema de registro e inicio de sesión con autenticación por token
+- ✅ Carrito de compras (agregar/eliminar/actualizar cantidades)
+- ✅ Creación y visualización de pedidos
+- ✅ Panel de administración exclusivo para gestionar productos
+- ✅ Cerrar sesión y limpieza de sesión
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+Tabla
+
+| Componente | Tecnología |
+| --- | --- |
+| **Frontend** | Django 5.0, HTML5, CSS3 |
+| **Backend** | FastAPI, Python 3.11+ |
+| **Base de Datos** | MongoDB Atlas |
+| **Autenticación** | JWT (JSON Web Tokens) |
+| **Despliegue Frontend** | Vercel |
+| **Despliegue API** | Render |
+
+---
+
+## 📁 Estructura del Proyecto
 
 ```
+techgear_web/          # Proyecto Django (Frontend)
+├── store/             # Aplicación principal
+│   ├── templates/     # Archivos HTML
+│   ├── views.py       # Lógica de conexión con la API
+│   └── urls.py        # Rutas del sitio
+└── ...
 
----
-
-## 📋 Cómo agregarlo al proyecto:
-1. En la carpeta principal `t2_pyFastApi` → **New File** → nombre: `README.md`
-2. Pega todo el bloque de arriba ✅
-3. **Commit changes** → `git push`
-
-¡Listo para mañana! Descansa bien y seguimos dejando todo perfecto 🔥💪
+techgear_api/          # FastAPI (Backend)
+├── main.py           # Punto de entrada y rutas de la API
+├── database.py       # Conexión con MongoDB
+└── requirements.txt  # Dependencias de Python
 ```
