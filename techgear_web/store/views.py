@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-API_URL = "https://t2-pyfastapi-kmt2onrender.com"
+API_URL = "https://t2-pyfastapi-kmt2.onrender.com"
 
 
 def inicio(request):
@@ -11,7 +11,7 @@ def inicio(request):
 
 def catalogo(request):
     try:
-        resp = requests.get(f"{API_URL}/productos", timeout=10)
+        resp = requests.get(f"{API_URL}/productos", timeout=30)
         if resp.status_code == 200:
             productos = resp.json()
             for p in productos:
@@ -28,7 +28,7 @@ def catalogo(request):
 def login(request):
     if request.method == "POST":
         correo = request.POST.get("correo", "")
-        password_form = request.POST.get("password", "")  # ✅ Corregido: era "contrasena"
+        password_form = request.POST.get("password", "")
         
         datos = {
             "correo": correo,
@@ -36,14 +36,14 @@ def login(request):
         }
         
         try:
-            resp = requests.post(f"{API_URL}/login", json=datos, timeout=10)
+            resp = requests.post(f"{API_URL}/login", json=datos, timeout=30)
             
             if resp.status_code == 200:
                 usuario = resp.json()
                 request.session["nombre"] = usuario.get("nombre", "")
                 request.session["correo"] = usuario.get("correo", "")
                 request.session["es_admin"] = usuario.get("es_admin", False)
-                request.session["token"] = usuario.get("access_token", "")  # ✅ Guardamos el token
+                request.session["token"] = usuario.get("access_token", "")
                 
                 if usuario.get("es_admin", False):
                     return redirect("panel_admin")
@@ -66,7 +66,7 @@ def registro(request):
     if request.method == "POST":
         nombre = request.POST.get("nombre", "")
         correo = request.POST.get("correo", "")
-        password_form = request.POST.get("password", "")  # ✅ Corregido: era "contrasena"
+        password_form = request.POST.get("password", "")
         
         datos = {
             "nombre": nombre,
@@ -75,7 +75,7 @@ def registro(request):
         }
         
         try:
-            resp = requests.post(f"{API_URL}/registro", json=datos, timeout=10)
+            resp = requests.post(f"{API_URL}/registro", json=datos, timeout=30)
             
             if resp.status_code in (200, 201):
                 messages.success(request, "✅ Cuenta creada exitosamente. Inicia sesión.")
@@ -102,7 +102,7 @@ def panel_admin(request):
         return redirect("inicio")
     
     try:
-        resp = requests.get(f"{API_URL}/productos", timeout=10)
+        resp = requests.get(f"{API_URL}/productos", timeout=30)
         if resp.status_code == 200:
             productos = resp.json()
         else:
@@ -136,7 +136,7 @@ def crear_producto(request):
                 f"{API_URL}/productos",
                 json=datos,
                 params={"correo_admin": correo_admin},
-                timeout=10
+                timeout=30
             )
             if resp.status_code == 200:
                 messages.success(request, "✅ Producto creado exitosamente")
@@ -159,7 +159,7 @@ def eliminar_producto(request, producto_id):
         resp = requests.delete(
             f"{API_URL}/productos/{producto_id}",
             params={"correo_admin": correo_admin},
-            timeout=10
+            timeout=30
         )
         if resp.status_code == 200:
             messages.success(request, "✅ Producto eliminado")
@@ -178,7 +178,7 @@ def ver_pedidos(request):
         return redirect("login")
     
     try:
-        resp = requests.get(f"{API_URL}/pedidos/{correo}", timeout=10)
+        resp = requests.get(f"{API_URL}/pedidos/{correo}", timeout=30)
         if resp.status_code == 200:
             pedidos = resp.json()
         else:
@@ -196,7 +196,7 @@ def ver_carrito(request):
         return redirect("login")
     
     try:
-        resp = requests.get(f"{API_URL}/carrito/{correo}", timeout=10)
+        resp = requests.get(f"{API_URL}/carrito/{correo}", timeout=30)
         if resp.status_code == 200:
             carrito = resp.json()
         else:
@@ -214,7 +214,7 @@ def agregar_carrito(request):
         return redirect("login")
     
     if request.method == "POST":
-        producto_id = request.POST.get("producto_id")  # ✅ Desde POST, no desde URL
+        producto_id = request.POST.get("producto_id")
         cantidad = int(request.POST.get("cantidad", 1))
         
         if not producto_id:
@@ -229,7 +229,7 @@ def agregar_carrito(request):
                     "producto_id": producto_id,
                     "cantidad": cantidad
                 },
-                timeout=10
+                timeout=30
             )
             if resp.status_code == 200:
                 messages.success(request, "✅ Agregado al carrito")
@@ -253,9 +253,9 @@ def eliminar_del_carrito(request, producto_id):
             json={
                 "correo_usuario": correo,
                 "producto_id": producto_id,
-                "cantidad": -9999  # ✅ Indicar que se elimina — o crear endpoint dedicado
+                "cantidad": -9999
             },
-            timeout=10
+            timeout=30
         )
         messages.success(request, "✅ Eliminado del carrito")
     except Exception as e:
@@ -274,7 +274,7 @@ def crear_pedido(request):
         resp = requests.post(
             f"{API_URL}/pedidos/crear",
             json={"correo_usuario": correo},
-            timeout=10
+            timeout=30
         )
         if resp.status_code == 200:
             messages.success(request, "✅ Pedido creado exitosamente")
