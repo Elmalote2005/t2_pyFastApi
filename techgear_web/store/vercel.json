@@ -1,0 +1,11 @@
+﻿{
+  "buildCommand": "cd techgear_web && python -m pip install -r ../requirements.txt && python manage.py collectstatic --noinput",
+  "installCommand": "cd techgear_web && python -m pip install -r ../requirements.txt",
+  "framework": null,
+  "outputDirectory": "techgear_web",
+  "routes": [
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/(.*)", "dest": "techgear_web.wsgi.application" }
+  ]
+}
+
